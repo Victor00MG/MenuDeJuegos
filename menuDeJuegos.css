@@ -1,0 +1,140 @@
+/* @keyframes glow {
+    0% {
+        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000;
+    }
+    25% {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+    }
+    50% {
+        text-shadow: 0 0 5px #0000ff, 0 0 10px #0000ff, 0 0 15px #0000ff;
+    }
+    75% {
+        text-shadow: 0 0 5px #ffff00, 0 0 10px #ffff00, 0 0 15px #ffff00;
+    }
+    100% {
+        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000;
+    }
+} */
+@keyframes glow {
+    0%, 100% {
+        text-shadow: none;
+        opacity: 0.5;
+    }
+    50% {
+        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000; /* Efecto de brillo */
+        opacity: 1;
+    }
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    display: flex;
+    flex-direction: column;
+}
+header{
+    background: rgba(0, 0, 0, 0.815);
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.body{
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.title{
+    margin: 0 auto;
+    align-items: center;
+}
+.content{
+    display: flex;
+}
+h1{
+    font-size: 4rem;
+    font-family: monospace;
+    color: white; /* Color del texto */
+    overflow: hidden; /* Oculta desbordamientos */
+}
+.letter {
+    display: inline-block; /* Permite aplicar animaciones individualmente */
+    opacity: 0; /* Inicialmente invisible */
+    transition: opacity 0.5s ease; /* Transición de opacidad */
+}
+.space {
+    margin: 0 10px; /* Espacio mayor entre palabras */
+}
+i, .fas fa-gamepad {
+    font-size: 34px; /* Tamaño del ícono */
+    color: rgb(201, 45, 17);     /* Color del ícono */
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra sutil */
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 250px;
+}
+.contenedor{
+    display: inline;
+    display: grid;
+    grid-gap: 100px;
+}
+.part{
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+}
+.part2{
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+}
+.contenedor2{
+    display: inline;
+    display: grid;
+    grid-gap: 100px;
+}
+.part3{
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+}
+.part4{
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+}
+img{
+    border: 2px solid #000; /* Borde sólido negro */
+    border-radius: 28px; /* Bordes redondeados */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    
+}
+img:hover{
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+    transition: transform 0.5s ease, color 0.5s ease;/* Suaviza la transición */
+    cursor: pointer; 
+}

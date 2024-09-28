@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #e0f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #00796b;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .button {
+            padding: 20px 40px;
+            font-size: 18px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+        .rojo { background-color: #f44336; }
+        .verde { background-color: #4caf50; }
+        .azul { background-color: #2196f3; }
+        .amarillo { background-color: #ffeb3b; }
+        .naranja { background-color: #ff9800; }
+        .morado { background-color: #9c27b0; }
+        .rosa { background-color: #e91e63; }
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .brillante {
+            box-shadow: 0 0 15px yellow, 0 0 30px yellow, 0 0 45px yellow;
+        }
+        .presionado {
+            box-shadow: 0 0 15px blue, 0 0 30px blue, 0 0 45px blue;
+            transform: scale(1.1);
+        }
+        .iluminar {
+            box-shadow: 0 0 15px blue, 0 0 30px blue, 0 0 45px blue; /* Color azul al iluminar */
+        }
+        #result {
+            margin: 20px 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00796b;
+        }
+        button#iniciarBtn {
+            background-color: #00897b;
+            color: white;
+            font-size: 20px;
+            padding: 15px 30px;
+        }
+        button#iniciarBtn:hover {
+            background-color: #00796b;
+        }
+        button#reiniciarBtn, button#salirBtn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        button#reiniciarBtn:hover, button#salirBtn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Bienvenido al Juego de Memoria!</h1>
+    
+    <div>
+        <button id="iniciarBtn" onclick="iniciarJuego()">Iniciar</button>
+        <div>
+            <button class="button rojo" onclick="jugar('rojo')">Rojo</button>
+            <button class="button verde" onclick="jugar('verde')">Verde</button>
+            <button class="button azul" onclick="jugar('azul')">Azul</button>
+            <button class="button amarillo" onclick="jugar('amarillo')">Amarillo</button>
+            <button class="button naranja" onclick="jugar('naranja')">Naranja</button>
+            <button class="button morado" onclick="jugar('morado')">Morado</button>
+            <button class="button rosa" onclick="jugar('rosa')">Rosa</button>
+        </div>
+    </div>
+    
+    <div id="result"></div>
+    
+    <div>
+        <button id="reiniciarBtn" onclick="reiniciar()">Reiniciar</button>
+        <button id="salirBtn" onclick="salir()">Salir</button>
+    </div>
+
+    <script>
+        const colores = ["rojo", "verde", "azul", "amarillo", "naranja", "morado", "rosa"];
+        let secuencia = [];
+        let nivel = 0;
+        let indiceUsuario = 0;
+        let jugando = false;
+
+        function generarSecuencia() {
+            secuencia.push(colores[Math.floor(Math.random() * colores.length)]);
+        }
+
+        function resaltarColor(color) {
+            const button = document.querySelector(`.${color}`);
+            button.classList.add('brillante');
+            setTimeout(() => {
+                button.classList.remove('brillante');
+            }, 1000); // Resalta durante 1 segundo
+        }
+
+        function presionarColor(color) {
+            const button = document.querySelector(`.${color}`);
+            button.classList.add('presionado');
+            setTimeout(() => {
+                button.classList.remove('presionado');
+            }, 300); // Efecto de presión durante 0.3 segundos
+        }
+
+        function iluminarColor() {
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                button.classList.add('iluminar');
+                setTimeout(() => {
+                    button.classList.remove('iluminar');
+                }, 500); // Ilumina durante 0.5 segundos
+            });
+        }
+
+        function iniciarJuego() {
+            reiniciar(); // Reinicia el juego antes de empezar
+            generarSecuencia();
+            jugando = true; // Marca que se está jugando
+            mostrarSecuencia();
+        }
+
+        function mostrarSecuencia() {
+            secuencia.forEach((color, index) => {
+                setTimeout(() => {
+                    resaltarColor(color);
+                }, index * 1500); // Resalta cada color en intervalos de 1.5 segundos
+            });
+            setTimeout(() => {
+                // Permitir al usuario jugar después de mostrar la secuencia
+                document.getElementById("result").innerHTML = "¡Tu turno! Presiona los colores.";
+            }, secuencia.length * 1500 + 500); // Tiempo total para mostrar la secuencia
+        }
+
+        function jugar(color) {
+            if (!jugando) {
+                return; // Espera a que se inicie el juego
+            }
+
+            // Resalta el botón presionado
+            presionarColor(color);
+            iluminarColor(); // Ilumina el botón con color azul
+
+            if (color === secuencia[indiceUsuario]) {
+                indiceUsuario++;
+                if (indiceUsuario === secuencia.length) {
+                    nivel++;
+                    indiceUsuario = 0;
+
+                    // Espera 3 segundos antes de mostrar la nueva secuencia
+                    setTimeout(() => {
+                        generarSecuencia();
+                        mostrarSecuencia(); // Muestra la nueva secuencia
+                        document.getElementById("result").innerHTML = "¡Correcto! Pasas al siguiente nivel.";
+                    }, 1000); // Espera 3 segundos
+                }
+            } else {
+                document.getElementById("result").innerHTML = `Incorrecto. La secuencia era: ${secuencia.join(', ')}`;
+                alert("¡Has perdido! Intenta nuevamente."); // Mensaje de pérdida
+                reiniciar(); // Reinicia el juego si el usuario se equivoca
+            }
+        }
+
+        function reiniciar() {
+            secuencia = [];
+            indiceUsuario = 0;
+            nivel = 0;
+            document.getElementById("result").innerHTML = "";
+            jugando = false; // Marca que no se está jugando
+        }
+
+        function salir() {
+            window.location.href = "index.html"; // Cambia la URL a la que deseas redirigir
+        }
+    </script>
+</body>
+</html>

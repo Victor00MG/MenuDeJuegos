@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piedra, Papel o Tijera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 50px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        #result {
+            font-size: 22px;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #2980b9;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .button {
+            padding: 80px 50px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .piedra {
+            background-image: url(img/piedraa.png);
+        }
+        .papel {
+            background-image: url(img/paper.jpeg);
+        }
+        .tijera {
+            background-image: url(img/tijeras.png);
+        }
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            color: white;
+            font-weight: bold;
+            background-color: #2980b9;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #3498db;
+            transform: translateY(-2px);
+        }
+        #iaChoice {
+            margin-top: 20px;
+        }
+        #iaImage {
+            width: 100px;
+            height: 100px;
+            display: none; /* Ocultamos la imagen inicialmente */
+            margin: 10px auto; /* Centrar la imagen */
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Bienvenido a Piedra, Papel o Tijera!</h1>
+    <div>
+        <button class="button piedra" onclick="jugar('piedra')">Piedra</button>
+        <button class="button papel" onclick="jugar('papel')">Papel</button>
+        <button class="button tijera" onclick="jugar('tijera')">Tijera</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <div id="iaChoice">
+        <img id="iaImage" src="" alt="Elección de la IA">
+    </div>
+    
+    <div>
+        <button onclick="salir()">Salir</button>
+    </div>
+    <script>
+        let eleccionesJugador = [];
+        const opciones = ['piedra', 'papel', 'tijera'];
+
+        function obtenerOpcionIA() {
+            if (eleccionesJugador.length === 0) {
+                return opciones[Math.floor(Math.random() * opciones.length)];
+            }
+
+            const conteo = { 'piedra': 0, 'papel': 0, 'tijera': 0 };
+            for (let eleccion of eleccionesJugador) {
+                conteo[eleccion] += 1;
+            }
+
+            const prediccion = Object.keys(conteo).reduce((a, b) => conteo[a] > conteo[b] ? a : b);
+
+            if (prediccion === 'piedra') {
+                return 'papel';
+            } else if (prediccion === 'papel') {
+                return 'tijera';
+            } else {
+                return 'piedra';
+            }
+        }
+
+        function jugar(jugador) {
+            if (!opciones.includes(jugador)) {
+                return;
+            }
+
+            eleccionesJugador.push(jugador);
+            const ia = obtenerOpcionIA();
+            let resultado = `La IA eligió: ${ia}<br>`;
+
+            // Mostrar la imagen correspondiente a la elección de la IA
+            const iaImage = document.getElementById("iaImage");
+            iaImage.src = `img/${ia}.png`; // Asegúrate de que las imágenes estén nombradas como piedra.png, papel.png y tijera.png
+            iaImage.style.display = 'block'; // Mostrar la imagen
+
+            if (jugador === ia) {
+                resultado += "¡Es un empate!";
+            } else if ((jugador === 'piedra' && ia === 'tijera') || 
+                       (jugador === 'papel' && ia === 'piedra') || 
+                       (jugador === 'tijera' && ia === 'papel')) {
+                resultado += "¡Ganaste!";
+            } else {
+                resultado += "La IA ganó.";
+            }
+
+            document.getElementById("result").innerHTML = resultado;
+        }
+
+        function salir() {
+            window.location.href = "index.html"; // Cambia la URL a la que deseas redirigir
+        }
+    </script>
+</body>
+</html>

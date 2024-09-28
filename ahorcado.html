@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Ahorcado</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2980b9;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        #ahorcado {
+            font-family: monospace;
+            white-space: pre;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border: 2px solid #2980b9;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        #palabra {
+            font-size: 28px;
+            margin: 20px 0;
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+        #inputContainer {
+            margin: 20px 0;
+        }
+        input {
+            padding: 10px;
+            font-size: 20px;
+            width: 50px;
+            text-align: center;
+            border: 2px solid #2980b9;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #3498db;
+            transform: translateY(-2px);
+        }
+        #reiniciarBtn, #salirBtn {
+            display: none;
+            background-color: #e74c3c;
+        }
+        #reiniciarBtn:hover, #salirBtn:hover {
+            background-color: #c0392b;
+        }
+        #mensaje {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Bienvenido al juego del Ahorcado!</h1>
+    <div id="ahorcado"></div>
+    <div id="palabra"></div>
+    <p>Tienes <span id="intentos">6</span> intentos restantes.</p>
+    
+    <div id="inputContainer">
+        <input type="text" id="letraInput" maxlength="1" placeholder="A">
+        <button onclick="adivinarLetra()">Adivinar</button>
+    </div>
+    
+    <p id="mensaje"></p>
+    <button id="reiniciarBtn" onclick="reiniciarJuego()">Volver a Jugar</button>
+    <button id="salirBtn" onclick="salir()">Salir</button>
+
+    <script>
+        const palabras = ["python", "programacion", "juego", "java",
+        "computadora", "algoritmo", "internet", "programacion", "software",
+        "hardware", "montaña", "océano", "bosque", "desierto",
+        "animal", "planta", "pizza", "hamburguesa", "chocolate",
+        "ensalada", "sushi", "pasta", "literatura", "música",
+        "cine", "pintura", "danza", "teatro", "aventura",
+        "amistad", "felicidad", "misterio", "historia", "viaje"];
+        let palabra;
+        let letrasAdivinadas;
+        let intentosRestantes;
+
+        function elegirPalabra() {
+            return palabras[Math.floor(Math.random() * palabras.length)];
+        }
+
+        function mostrarEstado() {
+            let estado = "";
+            for (let letra of palabra) {
+                if (letrasAdivinadas.has(letra)) {
+                    estado += letra + " ";
+                } else {
+                    estado += "_ ";
+                }
+            }
+            return estado.trim();
+        }
+
+        function dibujarHombre(intentos) {
+            const etapas = [
+                `   -----\n   |   |\n \n \n \n \n`, // 6 intentos restantes
+                `   -----\n   |   |\n   |   O\n \n \n \n`, // 5 intentos
+                `   -----\n   |   |\n   |   O\n   |   |\n \n \n`, // 4 intentos
+                `   -----\n   |   |\n   |   O\n   |  /|\n \n \n`, // 3 intentos
+                `   -----\n   |   |\n   |   O\n     |  /|\\ \n \n \n`, // 2 intentos
+                `   -----\n   |   |\n   |   O\n    |  /|\\\n  |  /\n \n`, // 1 intento
+                `   -----\n   |   |\n   |   O\n    |  /|\\\n     |  / \\ \n| \n`, // 0 intentos
+            ];
+            return etapas[6 - intentos]; // Mostrar según los intentos restantes
+        }
+
+        function adivinarLetra() {
+            if (intentosRestantes <= 0) return; // Detener si ya no hay intentos
+
+            const letraInput = document.getElementById("letraInput");
+            const letra = letraInput.value.toLowerCase();
+            letraInput.value = ""; // Limpiar el input
+
+            if (letrasAdivinadas.has(letra)) {
+                mostrarMensaje("Ya has adivinado esa letra. Prueba con otra.");
+                return;
+            }
+
+            letrasAdivinadas.add(letra);
+
+            if (palabra.includes(letra)) {
+                mostrarMensaje("¡Bien hecho! La letra está en la palabra.");
+            } else {
+                intentosRestantes--;
+                mostrarMensaje("Esa letra no está en la palabra. Intenta de nuevo.");
+            }
+
+            document.getElementById("ahorcado").innerText = dibujarHombre(intentosRestantes);
+            actualizarJuego();
+        }
+
+        function actualizarJuego() {
+            document.getElementById("palabra").innerText = mostrarEstado();
+            document.getElementById("intentos").innerText = intentosRestantes;
+
+            if (intentosRestantes <= 0) {
+                document.getElementById("ahorcado").innerText = dibujarHombre(0); // Mostrar muñeco completo
+                mostrarMensaje(`¡Game Over! La palabra era: ${palabra}`);
+                mostrarBotonReiniciar();
+            } else if (mostrarEstado().replace(/ /g, '') === palabra) {
+                mostrarMensaje(`¡Felicidades! Has adivinado la palabra: ${palabra}`);
+                mostrarBotonReiniciar();
+            }
+        }
+
+        function mostrarMensaje(mensaje) {
+            document.getElementById("mensaje").innerText = mensaje;
+        }
+
+        function mostrarBotonReiniciar() {
+            document.getElementById("reiniciarBtn").style.display = "inline-block";
+            document.getElementById("salirBtn").style.display = "inline-block"; // Mostrar botón de salir
+        }
+
+        function reiniciarJuego() {
+            palabra = elegirPalabra();
+            letrasAdivinadas = new Set();
+            intentosRestantes = 6;
+            document.getElementById("ahorcado").innerText = dibujarHombre(6); // Mostrar muñeco inicial
+            document.getElementById("reiniciarBtn").style.display = "none";
+            document.getElementById("salirBtn").style.display = "none"; // Ocultar botón de salir al reiniciar
+            document.getElementById("mensaje").innerText = ""; // Limpiar el mensaje al reiniciar
+            actualizarJuego();
+        }
+
+        function salir() {
+            window.location.href = "index.html"; // Cambia esta URL a la que deseas redirigir
+        }
+
+        // Inicializar el juego
+        reiniciarJuego();
+    </script>
+</body>
+</html>

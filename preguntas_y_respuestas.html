@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Preguntas y Respuestas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #4CAF50, #81C784);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.5em;
+        }
+        .preguntas-seccion {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+        .preguntas, .seccion-dos {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 300px;
+            transition: transform 0.3s;
+        }
+        .preguntas:hover, .seccion-dos:hover {
+            transform: scale(1.02);
+        }
+        .pregunta {
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .opciones {
+            margin-left: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        .resultado {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 24px;
+            color: #4CAF50;
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        .seccion-dos {
+            background: #e0f7fa;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .preguntas-seccion {
+                flex-direction: column;
+                align-items: center;
+            }
+            .preguntas, .seccion-dos {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Bienvenido al Quiz!</h1>
+    <div class="preguntas-seccion">
+        <div id="preguntas1" class="preguntas"></div>
+        <div id="preguntas2" class="seccion-dos"></div>
+    </div>
+    <button id="submit" style="display:none;">Enviar Respuestas</button>
+    <div id="resultado" class="resultado"></div>
+    <button id="restart" style="display:none;">Volver a Jugar</button>
+    <button id="exit">Salir</button>
+
+    <script>
+        const preguntas = [
+            {
+                pregunta: "¿Cuál es la capital de Francia?",
+                opciones: ["A) Berlín", "B) Madrid", "C) París", "D) Roma"],
+                respuesta: "C"
+            },
+            {
+                pregunta: "¿Cuántos planetas hay en el sistema solar?",
+                opciones: ["A) 7", "B) 8", "C) 9", "D) 10"],
+                respuesta: "B"
+            },
+            {
+                pregunta: "¿Quién escribió 'Cien años de soledad'?",
+                opciones: ["A) Gabriel García Márquez", "B) Julio Cortázar", "C) Pablo Neruda", "D) Mario Vargas Llosa"],
+                respuesta: "A"
+            },
+            {
+                pregunta: "¿Cuál es el río más largo del mundo?",
+                opciones: ["A) Amazonas", "B) Nilo", "C) Yangtsé", "D) Misisipi"],
+                respuesta: "B"
+            },
+            {
+                pregunta: "¿En qué año llegó el hombre a la luna?",
+                opciones: ["A) 1965", "B) 1969", "C) 1971", "D) 1975"],
+                respuesta: "B"
+            }
+        ];
+
+        let puntaje = 0;
+
+        function mostrarPreguntas() {
+            puntaje = 0; // Reiniciar puntaje
+            const preguntas1Div = document.getElementById('preguntas1');
+            const preguntas2Div = document.getElementById('preguntas2');
+            preguntas1Div.innerHTML = ''; // Limpiar preguntas anteriores
+            preguntas2Div.innerHTML = ''; // Limpiar segunda sección
+
+            preguntas.slice(0, 3).forEach((pregunta, index) => {
+                const preguntaDiv = document.createElement('div');
+                preguntaDiv.classList.add('pregunta');
+                preguntaDiv.innerHTML = `<p>${pregunta.pregunta}</p>`;
+                pregunta.opciones.forEach(opcion => {
+                    preguntaDiv.innerHTML += `
+                        <div class="opciones">
+                            <input type="radio" name="pregunta1_${index}" value="${opcion[0]}"> ${opcion}
+                        </div>
+                    `;
+                });
+                preguntas1Div.appendChild(preguntaDiv);
+            });
+
+            preguntas.slice(3).forEach((pregunta, index) => {
+                const preguntaDiv = document.createElement('div');
+                preguntaDiv.classList.add('pregunta');
+                preguntaDiv.innerHTML = `<p>${pregunta.pregunta}</p>`;
+                pregunta.opciones.forEach(opcion => {
+                    preguntaDiv.innerHTML += `
+                        <div class="opciones">
+                            <input type="radio" name="pregunta2_${index}" value="${opcion[0]}"> ${opcion}
+                        </div>
+                    `;
+                });
+                preguntas2Div.appendChild(preguntaDiv);
+            });
+
+            preguntas2Div.style.display = 'block'; // Mostrar la segunda sección
+            document.getElementById('submit').style.display = 'block';
+            document.getElementById('resultado').innerText = '';
+            document.getElementById('restart').style.display = 'none';
+        }
+
+        function calcularPuntaje() {
+            preguntas.forEach((pregunta, index) => {
+                const opciones = document.getElementsByName(index < 3 ? `pregunta1_${index}` : `pregunta2_${index - 3}`);
+                opciones.forEach(opcion => {
+                    if (opcion.checked && opcion.value === pregunta.respuesta) {
+                        puntaje++;
+                    }
+                });
+            });
+            document.getElementById('resultado').innerText = `Tu puntuación final es: ${puntaje} de ${preguntas.length}`;
+            document.getElementById('restart').style.display = 'block';
+        }
+
+        document.getElementById('submit').addEventListener('click', () => {
+            calcularPuntaje();
+        });
+
+        document.getElementById('restart').addEventListener('click', () => {
+            mostrarPreguntas();
+            document.getElementById('submit').style.display = 'block';
+        });
+
+        document.getElementById('exit').addEventListener('click', () => {
+            window.location.href = 'index.html'; // Cambia esta URL por la página a la que deseas redirigir
+        });
+
+        mostrarPreguntas();
+    </script>
+</body>
+</html>
